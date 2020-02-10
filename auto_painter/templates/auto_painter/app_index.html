@@ -1,0 +1,15 @@
+{% load static %}
+<link rel="stylesheet" type="text/css" href="
+{% static 'auto_painter/style.css' %}">
+
+{% if latest_auto_painter_list %}
+    <ul>
+    {% for auto_painter in latest_auto_painter_list %}
+{#        <li><a href="/auto_painter/{{ auto_painter.id }}/">#}
+{#            {{ auto_painter.id }}</a></li>#}
+        <li><a href="{% url 'auto_painter:detail' auto_painter.id %}">
+            {{ auto_painter.id }}</a></li>
+    {% endfor %}
+    </ul>
+{% else %}
+{% endif %}
