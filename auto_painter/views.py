@@ -5,17 +5,17 @@ from django.views import generic
 from .models import AutoPainter
 
 
-def index(request):
+def list(request):
     latest_auto_painter_list = AutoPainter.objects.all()
     context = {
         'latest_auto_painter_list': latest_auto_painter_list
     }
-    return render(request, template_name='auto_painter/app_index.html',
+    return render(request, template_name='auto_painter/autopainter_list.html',
                   context=context)
 
 
-class IndexView(generic.ListView):
-    template_name = 'auto_painter/app_index.html'
+class ListView(generic.ListView):
+    template_name = 'auto_painter/autopainter_list.html'
     context_object_name = 'latest_auto_painter_list'
 
     def get_queryset(self):
@@ -37,3 +37,7 @@ class DetailView(generic.DetailView):
     # name is the model_name_detail.html
     # context_object_name = 'autopainter'
     # template_name = 'auto_painter/autopainter_detail.html'
+
+
+def autoPainter(request):
+    return render(request, 'auto_painter/autopainter.html')
