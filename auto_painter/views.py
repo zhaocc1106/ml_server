@@ -1,11 +1,21 @@
+import json
+
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse
 from django.http import Http404
 from django.views import generic
+from django.views.decorators.csrf import csrf_exempt
+
 from .models import AutoPainter
 
 
-def list(request):
+def auto_painter(request):
+    """Enter auto painter page."""
+    return render(request, 'auto_painter/autopainter.html')
+
+
+def list_view(request):
+    """List view function."""
     latest_auto_painter_list = AutoPainter.objects.all()
     context = {
         'latest_auto_painter_list': latest_auto_painter_list
@@ -15,6 +25,7 @@ def list(request):
 
 
 class ListView(generic.ListView):
+    """List view class."""
     template_name = 'auto_painter/autopainter_list.html'
     context_object_name = 'latest_auto_painter_list'
 
@@ -22,7 +33,8 @@ class ListView(generic.ListView):
         return AutoPainter.objects.all()
 
 
-def detail(request, auto_painter_id):
+def detail_view(request, auto_painter_id):
+    """Detail view function."""
     # try:
     #     response = AutoPainter.objects.get(id=auto_painter_id)
     # except AutoPainter.DoesNotExist:
@@ -32,6 +44,7 @@ def detail(request, auto_painter_id):
 
 
 class DetailView(generic.DetailView):
+    """Detail view class."""
     model = AutoPainter
     # Default context object name is the model name. Default template view
     # name is the model_name_detail.html
@@ -39,5 +52,12 @@ class DetailView(generic.DetailView):
     # template_name = 'auto_painter/autopainter_detail.html'
 
 
-def autoPainter(request):
-    return render(request, 'auto_painter/autopainter.html')
+def insert(request):
+    print(request.COOKIES)
+    stroke = json.loads(request.body)
+    auto_painter = AutoPainter()
+    auto_painter.class_name = "flower"
+    auto_painter.begin_stroke = stroke['begin_stroke']
+    auto_painter.follow_stroke = stroke['follow_stroke']
+    auto_painter.save()
+    return HttpResponse("insert success.")

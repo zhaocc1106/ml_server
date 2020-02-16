@@ -20,7 +20,6 @@ const RAINBOW_COLORS = ["#FF0000", "#FF7F00", "#FFFF00", "#00FF00", "#00FFFF", "
 load the model
 */
 async function start(cur_mode, model) {
-    // arabic or english
     mode = cur_mode;
     currentModel = model;
 
@@ -169,7 +168,7 @@ function preprocess(inks) {
 /*
 Auto draw.
 */
-function autodraw() {
+async function autodraw() {
     if (model === undefined) {
         console.log("Model unloaded.!");
         return;
@@ -194,7 +193,7 @@ function autodraw() {
     let predTf = model.predict(preprocess(predictStroke));
     let pred = predTf.dataSync();
     predTf.dispose();
-    // Find he last ink.
+    // Find the last ink.
     const index = (initialLen - 1) * 4;
     let pred_ = [pred[index], pred[index + 1], pred[index + 2], pred[index + 3]];
     // Save the new ink.
@@ -215,10 +214,11 @@ function autodraw() {
     } while (pred[3] < 0.5 && predictStroke.length <= MAX_LEN[currentModel] - initialLen);
     console.log(predictStroke);
     // Pop the initial inks.
-    predictStroke.splice(0, initialLen);
+    let initStroke = predictStroke.splice(0, initialLen);
     // Draw predict inks with the begin position of user stroke end.
     drawInks(predictStroke, "green", userStroke[userStroke.length - 1]);
     // drawInks(predictStroke, "green", [150, 150]);
+    postStroke(initStroke, predictStroke)
 }
 
 /*
@@ -269,7 +269,7 @@ async function drawInks(inks, color, beginPos) {
 
 /*
 Sleep function.
- */
+*/
 function sleep(time) {
     return new Promise((resolve) => setTimeout(resolve, time));
 }
@@ -303,7 +303,7 @@ async function drawStroke(stroke) {
             pathStr += " L " + stroke[ink][0] + " " + stroke[ink][1];
         }
         // If euclidean distance of two ink < 3, add path later and don't delay.
-        console.log(eucDistance(stroke[ink - 1][0], stroke[ink][0], stroke[ink - 1][1], stroke[ink][1]));
+        // console.log(eucDistance(stroke[ink - 1][0], stroke[ink][0], stroke[ink - 1][1], stroke[ink][1]));
         if (eucDistance(stroke[ink - 1][0], stroke[ink][0], stroke[ink - 1][1], stroke[ink][1]) < 3) {
             console.log("If euclidean distance of two ink < 3, add path later and don't delay.");
         } else {
@@ -318,7 +318,37 @@ async function drawStroke(stroke) {
 
 /*
 Calc the euclidean distance.
- */
+*/
 function eucDistance(x0, x1, y0, y1) {
     return ((x1 - x0) ** 2 + (y1 - y0) ** 2) ** 0.5;
+}
+
+/*
+Post the stroke to server.
+*/
+function postStroke(beginStroke, followStroke) {
+    let httpReq = new XMLHttpRequest();
+    const url = window.location.href + 'insert';
+    httpReq.open('post', url, true);
+    httpReq.setRequestHeader("Content-type", "application/json");
+    httpReq.setRequestHeader('X-CSRFtoken', getCookie("csrftoken"));
+    const jsonStr = JSON.stringify({
+        'begin_stroke': beginStroke,
+        'follow_stroke': followStroke,
+    });
+    httpReq.send(jsonStr);
+    httpReq.onreadystatechange = function () {
+        console.log(httpReq.response);
+    }
+}
+
+/*
+Get cookie.
+*/
+function getCookie(name) {
+    let reg = new RegExp(".*" + name + "=([0-9a-zA-Z]+).*");
+    if (arr = document.cookie.match(reg))
+        return arr[1];
+    else
+        return null;
 }

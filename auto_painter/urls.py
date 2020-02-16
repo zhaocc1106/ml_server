@@ -1,11 +1,14 @@
 from django.urls import path
+from django.views.decorators.csrf import csrf_exempt
+
 from . import views
 
 app_name = 'auto_painter'
 urlpatterns = [
-    # path('', views.list, name='index'),
-    # path('<int:auto_painter_id>/', views.detail, name='detail'),
-    path('list', views.ListView.as_view(), name='list'),
-    path('<int:pk>/', views.DetailView.as_view(), name='detail'),
-    path('', views.autoPainter, name='auto_painter')
+    path('', views.auto_painter, name='auto_painter'),
+    # path('list', views.list_view, name='list_view'),
+    path('list', views.ListView.as_view(), name='list_view'),
+    # path('<int:auto_painter_id>/', views.detail_view, name='detail_view'),
+    path('<int:pk>/', views.DetailView.as_view(), name='detail_view'),
+    path('insert', views.insert, name='insert'),
 ]
