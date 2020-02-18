@@ -5,6 +5,7 @@ from django.http import HttpResponse
 from django.http import Http404
 from django.views import generic
 from django.views.decorators.csrf import csrf_exempt
+from django.utils import timezone
 
 from .models import AutoPainter
 
@@ -59,5 +60,6 @@ def insert(request):
     auto_painter.class_name = "flower"
     auto_painter.begin_stroke = stroke['begin_stroke']
     auto_painter.follow_stroke = stroke['follow_stroke']
+    auto_painter.pub_date = timezone.now()
     auto_painter.save()
     return HttpResponse("insert success.")
