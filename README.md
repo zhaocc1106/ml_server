@@ -1,2 +1,2 @@
-# trobot_server
+# tRobot_server
 The server of tRobot(tester robot).
