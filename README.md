@@ -1,2 +1,2 @@
-# ml_server
-The server of machine learning.
+# trobot_server
+The server of tRobot(tester robot).

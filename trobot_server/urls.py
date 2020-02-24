@@ -1,4 +1,4 @@
-"""ml_server URL Configuration
+"""trobot_server URL Configuration
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/3.0/topics/http/urls/
@@ -19,5 +19,5 @@ from django.urls import include
 
 urlpatterns = [
     path('auto_painter/', include('auto_painter.urls')),
-    path('admin/', admin.site.urls),
+    path('', admin.site.urls),
 ]

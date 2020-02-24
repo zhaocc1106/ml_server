@@ -7,8 +7,8 @@ from django.utils import timezone
 # Create your models here.
 class AutoPainter(models.Model):
     class_name = models.CharField(max_length=100)
-    begin_stroke = models.CharField(max_length=4096)
-    follow_stroke = models.CharField(max_length=4096)
+    begin_stroke = models.TextField(max_length=21845)
+    follow_stroke = models.TextField(max_length=21845)
     pub_date = models.DateTimeField('date published')
 
     def __str__(self):
